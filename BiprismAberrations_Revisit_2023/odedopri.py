@@ -37,7 +37,7 @@ Revisions
 '''
 import numpy as np
 import numba
-
+from tqdm import trange
 
 def odedopri(f,  x0,  y0,  x1,  tol,  hmax,  hmin,  maxiter, args=()):
     # we trust that the compiler is smart enough to pre-evaluate the
@@ -90,12 +90,13 @@ def odedopri(f,  x0,  y0,  x1,  tol,  hmax,  hmin,  maxiter, args=()):
     x = x0
     y = y0
     h = hmax
+    has_been = 0
+    
+    for i in trange(maxiter):
+       if i % 1000 == 0:
+          print('\n x = \n', x)
+          print('h = \n', h)
 
-    for i in range(maxiter):
-       # if i % 5000 == 0:
-       #     print('\n x = \n', x)
-       #     print('h = \n', h)
-           
        # /* Compute the function values */
        K1 = f(x,       y, *args)
        K2 = f(x + c2*h, y+h*(a21*K1), *args)
@@ -116,7 +117,7 @@ def odedopri(f,  x0,  y0,  x1,  tol,  hmax,  hmin,  maxiter, args=()):
            delta = 0.84 * pow(tol / error, (1.0/5.0))
 
        if (error < tol):
-          x = x + h
+          x = x - h
           y = y + h * (b1*K1+b3*K3+b4*K4+b5*K5+b6*K6)
           
        if (delta <= 0.1):
@@ -129,11 +130,10 @@ def odedopri(f,  x0,  y0,  x1,  tol,  hmax,  hmin,  maxiter, args=()):
        if (h > hmax):
           h = hmax
 
-       if (x >= x1):
-          flag = 0
+       if (x <= x1):
           break
 
-       elif (x + h > x1):
+       elif (x + h < x1):
           h = x1 - x
 
        elif (h < hmin):
@@ -145,23 +145,13 @@ def odedopri(f,  x0,  y0,  x1,  tol,  hmax,  hmin,  maxiter, args=()):
     maxiter = maxiter - i
     if (i <= 0):
         flag = 2
+        
+    # if abs(x < 0.66666666666):
+    #    if has_been == 0:
+    #        y[1] = y[0]*(-1/0.5) + y[1]
+    #        has_been = 1
 
     return x, y
-
-def rk4(f, x0, y0, x1, n, args = ()):
-    vx = [0] * (n + 1)
-    vy = [0] * (n + 1)
-    h = (x1 - x0) / float(n)
-    vx[0] = x = x0
-    vy[0] = y = y0
-    for i in tqdm(range(1, n + 1)):
-        k1 = h * f(x, y, *args)
-        k2 = h * f(x + 0.5 * h, y + 0.5 * k1, *args)
-        k3 = h * f(x + 0.5 * h, y + 0.5 * k2, *args)
-        k4 = h * f(x + h, y + k3, *args)
-        vx[i] = x = x0 + i * h
-        vy[i] = y = y + (k1 + k2 + k2 + k3 + k3 + k4) / 6
-    return vx, vy
 
 def odedopri_store(f,  x0,  y0,  x1,  tol,  hmax,  hmin,  maxiter, args=()):
     # we trust that the compiler is smart enough to pre-evaluate the
@@ -218,7 +208,9 @@ def odedopri_store(f,  x0,  y0,  x1,  tol,  hmax,  hmin,  maxiter, args=()):
     X[0] = x0
     Y = np.zeros((maxiter, len(y0)))
     Y[0] = y0
-
+    
+    has_been = 0
+    
     counter = 1
     for i in range(maxiter):
        # /* Compute the function values */
@@ -232,7 +224,7 @@ def odedopri_store(f,  x0,  y0,  x1,  tol,  hmax,  hmin,  maxiter, args=()):
 
        error = abs((b1-b1p)*K1+(b3-b3p)*K3+(b4-b4p)*K4+(b5-b5p)*K5 +
                    (b6-b6p)*K6+(b7-b7p)*K7)
-
+       
        #Error in X controls tolerance
        error = max(error)
 
@@ -243,7 +235,7 @@ def odedopri_store(f,  x0,  y0,  x1,  tol,  hmax,  hmin,  maxiter, args=()):
            delta = np.inf
 
        if (error < tol):
-          x = x + h
+          x = x - h
           X[counter] = x
           y = y + h * (b1*K1+b3*K3+b4*K4+b5*K5+b6*K6)
           Y[counter, :] = y
@@ -259,16 +251,20 @@ def odedopri_store(f,  x0,  y0,  x1,  tol,  hmax,  hmin,  maxiter, args=()):
        if (h > hmax):
           h = hmax
 
-       if (x >= x1):
+       if (x <= x1):
           break
 
-       elif (x + h > x1):
+       elif (x + h < x1):
           h = x1 - x
 
        elif (h < hmin):
           print('Below hmin')
           break
-
+      
+       if abs(x < 0.66666666666):
+          if has_been == 0:
+              y[1] = y[0]*(-1/0.5) + y[1]
+              has_been = 1
+        
     return X, Y, counter
-
 
