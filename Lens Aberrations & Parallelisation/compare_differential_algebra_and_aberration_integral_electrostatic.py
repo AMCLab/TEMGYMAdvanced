@@ -8,7 +8,7 @@ Created on Wed Dec  7 16:50:17 2022
 
 import numpy as np
 import sympy as sp
-from numba import njit, jit
+#from numba import njit, jit
 from tqdm import tqdm
 from daceypy import DA, array
 import matplotlib.pyplot as plt
@@ -17,7 +17,7 @@ from Laplace import AnalyticalLaplace
 from scipy.special import ellipj, ellipkinc
 
 #Linearised Equation of Motion Solver via the Euler Cromer method
-@njit
+#@njit
 def euler_paraxial_electrostatic(r, v, z, dz, steps):
     for i in range(1, steps):
         
