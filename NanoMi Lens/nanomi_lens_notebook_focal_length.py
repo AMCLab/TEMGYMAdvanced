@@ -12,7 +12,6 @@ from odedopri import odedopri_store
 from scipy import interpolate 
 import time
 
-plt.rc('font', family='Helvetica')
 t0 = time.time()
 u_l = -1000
 

@@ -6,9 +6,6 @@ Created on Fri Dec 23 15:27:44 2022
 @author: andy
 """
 
-import pyvista as pv
-from pyvista import examples
-import pyvista 
 import sympy as sp
 import numpy as np
 from sum_of_norms import sum_of_norms, norm, symbolic_norm

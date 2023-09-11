@@ -156,8 +156,8 @@ for idx, U_0 in tqdm(enumerate(u_0_values)):
     
 
         
-X = np.array([real_focal_lengths, asymptotic_magnifications, asymptotic_focal_lengths, z_image_real, z_image_asymp, z_object, u_l_over_u_0]).T
-np.savetxt('RealMag_Realf_AsympMag_Asympf_zobject.txt', X)
+#X = np.array([real_focal_lengths, asymptotic_magnifications, asymptotic_focal_lengths, z_image_real, z_image_asymp, z_object, u_l_over_u_0]).T
+#np.savetxt('RealMag_Realf_AsympMag_Asympf_zobject.txt', X)
 
 
 

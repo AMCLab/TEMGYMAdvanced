@@ -130,18 +130,18 @@ for idx, U_0 in tqdm(enumerate(u_0_values)):
         # plt.plot(z_h_ray[:ih], h, '.', color = 'gray', label = 'Linearised ODE - h')
         
         fg = interpolate.CubicSpline(z_g_ray[:ig], g)
-        # plt.plot(z_g_ray[:ig], fg(z_g_ray[:ig]))
+        plt.plot(z_g_ray[:ig], fg(z_g_ray[:ig]))
         fh = interpolate.CubicSpline(z_h_ray[:ih], h)
-        # plt.plot(z_h_ray[:ih], fh(z_h_ray[:ih]))
+        plt.plot(z_h_ray[:ih], fh(z_h_ray[:ih]))
         
         #Get Focal Length when ray crossed radial axis via linear interpolation. 
         real_focal_length = fg.roots()[np.argmax(fg.roots()>0)]
         real_gaussian_image_plane = fh.roots()[np.argmax(fh.roots()>real_focal_length)]
         real_magnification = fg(real_gaussian_image_plane)
         
-        # plt.plot(real_focal_length, 0, '.m')
-        # plt.hlines(0, z_init, z_f, 'r')
-        # plt.vlines(real_gaussian_image_plane, 0, real_magnification)
+        plt.plot(real_focal_length, 0, '.m')
+        plt.hlines(0, z_init, z_f, 'r')
+        plt.vlines(real_gaussian_image_plane, 0, real_magnification)
         
         principal_gray_slope = g_[-1]
         principal_gray_intercept = g[-1]-principal_gray_slope*z[-1]
@@ -169,8 +169,6 @@ for idx, U_0 in tqdm(enumerate(u_0_values)):
         # plt.plot(asymptotic_gaussian_image_plane, 0, '.b')
         # plt.vlines(asymptotic_gaussian_image_plane, 0, asymptotic_magnification, 'r')
         # plt.hlines(asymptotic_magnification, real_z_pi, asymptotic_gaussian_image_plane, linestyle = '--')
-        # principal_ray_x = np.linspace(-0.1, real_focal_length, 100)
-        # principal_ray_y = principal_ray_slope*principal_ray_x
         
 
         # ax.scatter(real_magnification, z_init, facecolor = 'w', edgecolor = colors[idx], label = 'Real Magnification', zorder = 1)
@@ -185,26 +183,26 @@ for idx, U_0 in tqdm(enumerate(u_0_values)):
         z_image_asymp.append(asymptotic_gaussian_image_plane)
         u_l_over_u_0.append(u_l/U_0)
         
-        # plt.plot(z_object, z_image_real)
-        # plt.plot(z_object, z_image_asymp)
-        # fmag_real = interpolate.CubicSpline(real_magnifications, z_object)
-        # fmag_asympy = interpolate.CubicSpline(asymptotic_magnifications, z_object)
+        plt.plot(z_object, z_image_real)
+        plt.plot(z_object, z_image_asymp)
+        fmag_real = interpolate.CubicSpline(real_magnifications, z_object)
+        fmag_asympy = interpolate.CubicSpline(asymptotic_magnifications, z_object)
 
 
         i=i+1
         
 
-    # ax.plot(real_magnifications, fmag_real(real_magnifications), 'gray')   
-    # ax.plot(asymptotic_magnifications, fmag_asympy(asymptotic_magnifications), 'r') 
+    #ax.plot(real_magnifications, fmag_real(real_magnifications), 'gray')   
+    #ax.plot(asymptotic_magnifications, fmag_asympy(asymptotic_magnifications), 'r') 
 
-#ax.set_title('Object Distance vs Magnification')
-#ax.set_ylabel('Object Distance (m)')
-#ax.set_xlabel('Magnificiation (m) (Real & Asymptotic)')
+ax.set_title('Object Distance vs Magnification')
+ax.set_ylabel('Object Distance (m)')
+ax.set_xlabel('Magnificiation (m) (Real & Asymptotic)')
 # ax.legend()
     
 X = np.array([real_magnifications, real_focal_lengths, asymptotic_magnifications, asymptotic_focal_lengths, z_image_real, z_image_asymp, z_object, u_l_over_u_0]).T
 #np.savetxt('RealMag_Realf_AsympMag_Asympf_zobject_0.8-1.0.txt', X)
-np.savetxt('RealMag_Realf_AsympMag_Asympf_zobject_0.8-1.0_closer.txt', X)
+#np.savetxt('RealMag_Realf_AsympMag_Asympf_zobject_0.8-1.0_closer.txt', X)
 
 
 
